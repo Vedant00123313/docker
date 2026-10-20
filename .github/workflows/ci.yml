@@ -22,6 +22,7 @@ jobs:
   publish:
     needs: test
     runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
 
     permissions:
       contents: read
@@ -37,3 +38,6 @@ jobs:
 
       - name: Push image to ghcr
         run: docker push ghcr.io/vedant00123313/docker:latest
+
+      - name: Notify render using webhook
+        run: curl -X POST "${{secrets.DEPLOY_HOOK}}"
