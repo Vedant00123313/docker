@@ -18,3 +18,19 @@ jobs:
 
       - name: Run tests
         run: docker run --rm testimage npm test
+
+  publish:
+    needs: test
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: action/checkout@v4
+
+      - name: Login to ghcr
+        run: echo "${{secrets.GITHUB_TOKEN}}" | docker login ghcr.io -u "${{github.actor}}" --password-stdin
+
+      - name: Build Production image
+        run: docker build -t ghcr.io/Vedant00123313/docker:latest .
+
+      - name: Push image to dockerhub
+        run: docker push ghcr.io/Vedant00123313/docker:latest
